@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+body {
+  @apply bg-blue-200
+}
+
+.text-primary {
+  @apply text-sky-900
+}
