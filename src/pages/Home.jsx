@@ -12,6 +12,8 @@ export default function Home() {
 
   return (
     <>
+<div className="flex flex-col min-h-screen justify-between">
+    <div>
 
     <h1 className='text-primary text-3xl my-8 font-bold'>Alcohol Consumption Tracker</h1> 
     <p className="font-bold text-primary">¿Sabes cómo es tu relación con el alcohol?</p>
@@ -50,8 +52,12 @@ export default function Home() {
 
     </div>
 </div>
-
+  </div>
+  
+<div>
 <Thefooter />
+</div>
+</div>
  </>
     
   )

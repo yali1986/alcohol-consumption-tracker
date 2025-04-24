@@ -7,7 +7,7 @@ function App() {
 
   return (
     <>
-    <div className="mx-auto text-center my-14">
+    <div className="mx-auto text-center mt-14">
     <Home />     
     </div>
      
