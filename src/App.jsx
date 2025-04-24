@@ -1,16 +1,21 @@
-
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
+import Test from './pages/Test'
+import './App.css'
+
+
 
 function App() {
   
 
   return (
     <>
-    <div className="mx-auto text-center mt-14">
-    <Home />     
-    </div>
-     
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />       
+        <Route path="/test" element={<Test />} />
+      </Routes>
+    </BrowserRouter>     
     </>
   )
 }

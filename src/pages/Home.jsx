@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import ButtonPrimary from "../components/ButtonPrimary";
 import Thefooter from "../components/Thefooter";
 import logo from '../../public/logo.webp'
 import Modal from "../components/Modal";
+
 
 export default function Home() {
 
@@ -14,6 +16,7 @@ export default function Home() {
 
     return (
         <>
+       <div className="mx-auto text-center mt-14">
             <div className="flex flex-col min-h-screen justify-between">
                 <div>
                     <img src={logo} className="w-36 mx-auto" />
@@ -32,9 +35,11 @@ export default function Home() {
                         </Modal>
                     )}
 
-
                     <div className="bg-white rounded-t-xl mt-8 p-8">
-                        <ButtonPrimary title="Hacer Test" />
+                    <Link to="/test">
+                        <ButtonPrimary title="Hacer Test"/>                        
+                    </Link>
+                        
                         <div className="flex justify-between mt-8">
                             <div className="w-1/2 bg-amber-400 p-2">
                                 <div className="min-h-12">
@@ -57,6 +62,7 @@ export default function Home() {
                     <Thefooter />
                 </div>
             </div>
+        </div>
         </>
 
     )
