@@ -35,23 +35,28 @@ export default function Home() {
                         </Modal>
                     )}
 
-                    <div className="bg-white rounded-t-xl mt-8 p-8">
+                    <div className="bg-white rounded-t-xl mt-8 p-4">
                     <Link to="/test">
                         <ButtonPrimary title="Hacer Test"/>                        
                     </Link>
                         
-                        <div className="flex justify-between mt-8">
-                            <div className="w-1/2 bg-amber-400 p-2">
-                                <div className="min-h-12">
+                        <div className="flex justify-center mt-8 gap-4 text-sky-900">
+                            <div className="w-50 bg-slate-200 p-2 rounded-xl">
+                                <div className="min-h-24">
                                     <p>¿Quieres registrar tu consumo </p>
                                     <p>o contar tus días de abstinencia?</p>
                                 </div>
                                 <ButtonPrimary title="Crear cuenta" />
                             </div>
-                            <div className="w-1/2 bg-red-400 p-2">
-                                <p className="min-h-12">¿Ya tienes una cuenta?</p>
+                            <div className="w-50 bg-slate-200 p-2 rounded-xl shadow-lg">
+                            <div className="min-h-24">
+                              <p>¿Ya tienes una cuenta?</p>
+                              <p className="mt-4">Actualiza tu estado</p>
+                            </div>
+                               
+                                
 
-                                <ButtonPrimary title="Login" />
+                                <ButtonPrimary title="Inicia sesión" />
                             </div>
 
                         </div>

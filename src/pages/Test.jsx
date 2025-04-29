@@ -1,76 +1,147 @@
 
-import questions from '../data/questions';
-import logo from '../../public/logo.webp'
-import { Link } from 'react-router-dom';
-import ButtonPrimary from '../components/ButtonPrimary';
+import React from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { 
+  setGender, 
+  setAge, 
+  setAnswer, 
+  setResult, 
+  resetTest, 
+} from '../features/test/testSlice';
+import questions from "../data/questions";
+import ButtonPrimary from "../components/ButtonPrimary";
 
+export default function Test({onClose}) {
+  const dispatch = useDispatch();
+  const {gender, age ,answers, result } = useSelector(state => state.test);
+  const [step, setStep] = React.useState(0);
+  
+  const handleSelect = (questionIndex, valueIndex) => {
+    dispatch(setAnswer({ index: questionIndex, value: valueIndex }));
+  };
 
-export default function Test() {
-  return (
-    <div className="p-6">
-    <div className='flex items-center mb-6'>
-    <Link to="/">
-      <img src={logo} width={"80px"}/>  
-    </Link>
-    
-      <h2 className="text-2xl font-bold ms-10 text-primary">Cuestionario AUDIT</h2>
+  const handleNext = () => {
+    setStep((prev) => prev + 1);
+  };
+
+  const calculateScore = (answers, gender) => {
+    const total = answers.reduce((sum, val) => sum + (val ?? 0), 0);
+
+    let evaluation = "No definido";
+    if (gender === "hombre") {
+      if (total <= 8) evaluation = "Dentro de lo normal";
+      else if (total <= 13) evaluation = "Riesgo moderado";
+      else evaluation = "Problema grave";
+    } else {
+      if (total <= 6) evaluation = "Dentro de lo normal";
+      else if (total <= 13) evaluation = "Riesgo moderado";
+      else evaluation = "Problema grave";
+    }
+
+    return { total, evaluation };
+  };
+
+  const handleSubmit = () => {
+    const res = calculateScore(answers, gender);
+    dispatch(setResult(res));
+  };
+
+  // ✅ Mostrar resultado
+  if (result) {
+    return (
+      <div className="p-8">
+      {onClose && (
+  <button
+    onClick={onClose}
+    className="mb-6 text-blue-500 underline text-sm"
+  >
+    Cerrar test
+  </button>
+)}
+
+        <h2 className="text-2xl font-bold mb-4">Resultados</h2>
+        <h3 className="text-xl mb-2">Total puntuación: {result.total}</h3>
+        <h3 className="text-xl">Evaluación: {result.evaluation}</h3>
       </div>
-     <div className='flex gap-8 mb-6 bg-white py-2 px-6 rounded-lg text-primary'>
-     <div className="flex space-x-4 ">
-    <span className="font-semibold">Sexo:</span>
-    <label htmlFor="sexo-m" className="flex items-center space-x-1">
-      <input
-        type="radio"
-        id="sexo-m"
-        name="sexo"
-        value="M"
-        className="form-radio"
-      />
-      <span>Masculino</span>
-    </label>
-    <label htmlFor="sexo-f" className="flex items-center space-x-1">
-      <input
-        type="radio"
-        id="sexo-f"
-        name="sexo"
-        value="F"
-        className="form-radio"
-      />
-      <span>Femenino</span>
-    </label>
-    <div></div>
-  </div>
-      <label htmlFor="age" className="font-semibold">Edad</label>
-      <input type='number' id='age' className='border border-slate-400 max-w-10 -ms-6 rounded'/>
-    </div>
+    );
+  }
 
-    
-      {questions.map((q) => (
-        <fieldset key={q.id} className="mb-6 border p-4 rounded">
-          <legend className="font-semibold mb-2">{q.text}</legend>
-          <div className="space-y-2">
-            {q.options.map((opt, idx) => (
-              <label
-                key={idx}
-                htmlFor={`q${q.id}-opt${idx}`}
-                className="flex items-center space-x-2"
-              >
-                <input
-                  type="radio"
-                  id={`q${q.id}-opt${idx}`}
-                  name={`question-${q.id}`}
-                  value={opt}
-                  className="form-radio"
-                />
-                <span>{opt}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      ))}
+  // ✅ Paso inicial: edad y género
+  if (step === 0) {
+    return (
+      <div className="p-8">
+      { onClose && (
+  <button
+    onClick={onClose}
+    className="mb-6 text-blue-500 underline text-sm"
+  >
+    Cerrar test
+  </button>
+)}
+        <h2 className="text-2xl font-bold mb-4">Antes de comenzar</h2>
+        <label>Sexo:</label>
+        <select
+          value={gender || "" }
+          onChange={(e) => dispatch(setGender(e.target.value))}
+          className="border p-2 mb-4 block"
+        >
+          <option value="">Selecciona</option>
+          <option value="hombre">Hombre</option>
+          <option value="mujer">Mujer</option>
+        </select>
+        <label>Edad:</label>
+        <input
+          type="number"
+          value={age || ""}
+          onChange={(e) => dispatch(setAge(e.target.value))}
+          className="border p-2 block mb-4"
+        />
+        <ButtonPrimary
+          title="Comenzar"
+          onClick={() => {           
+            if (gender && age) setStep(1);
+            else alert("Por favor completa sexo y edad");
+          }}
+          
+        />
+      </div>
+    );
+  }
 
-      <ButtonPrimary title="Evaluar">        
-      </ButtonPrimary>
+
+  const question = questions[step - 1];
+  if (!question || !question.options) {
+    return <p>Error cargando la pregunta.</p>;
+    }
+    if (!question || !Array.isArray(answers)) {
+      return <div className="p-8 text-red-600">Error: datos incompletos</div>;
+    }
+
+  return (
+    <div className="p-8">
+      <div key={question.id} className="mb-6">
+        <p className="font-semibold mb-2">{question.text}</p>
+        
+        {question.options.map((opt, i) => (
+          <label key={i} className="block">
+            <input
+              type="radio"
+              name={`q${question.id}`}
+              value={i}
+              checked={answers?.[question.id - 1] === i}
+              onChange={() => handleSelect(question.id - 1, i)}
+            />
+            {" "}{opt}
+          </label>
+        ))}
+      </div>
+
+      {step < 10 ? (
+        <ButtonPrimary title="Siguiente" onClick={handleNext} />
+      ) : (
+        <ButtonPrimary title="Ver resultados" onClick={handleSubmit} />
+      )}
     </div>
   );
 }
+
